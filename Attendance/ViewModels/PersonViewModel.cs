@@ -4,6 +4,7 @@ namespace Attendance.ViewModels;
 
 public partial class PersonViewModel : ViewModelBase
 {
+
     [ObservableProperty]
     private int _id;
     
@@ -12,4 +13,11 @@ public partial class PersonViewModel : ViewModelBase
     
     [ObservableProperty]
     private string _lastName;
+    
+    public PersonViewModel(int id, string firstName, string lastName)
+    {
+        _id = id;
+        _firstName = firstName;
+        _lastName = lastName;
+    }
 }

@@ -13,4 +13,11 @@ public partial class GroupViewModel : ViewModelBase
     
     [ObservableProperty]
     private ObservableCollection<PersonViewModel> _people;
+    
+    public GroupViewModel(string name, string description,ObservableCollection<PersonViewModel> people)
+    {
+        _name = name;
+        _description = description;
+        _people = people;
+    }
 }

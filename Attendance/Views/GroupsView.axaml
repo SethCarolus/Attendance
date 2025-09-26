@@ -6,5 +6,33 @@
              x:Class="Attendance.Views.GroupsView">
     <StackPanel>
         <Label>Groups</Label>
+        
+        <ListBox ItemsSource="{Binding Groups}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Name:"/>
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Description:"/>
+                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <Label>Name:</Label>
+        <TextBox Text="{Binding Name }"/>
+        
+        <Label>Description:</Label>
+        <TextBox Text="{Binding Description}"/>
+        
+        <Button Command="{Binding AddCommand}" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        
     </StackPanel>
 </UserControl>

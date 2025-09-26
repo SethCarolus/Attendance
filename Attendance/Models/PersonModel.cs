@@ -12,4 +12,9 @@ public class PersonModel
         FirstName = firstName;
         LastName = lastName;
     }
+
+    public PersonModel()
+    {
+        
+    }
 }
