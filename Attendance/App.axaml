@@ -2,14 +2,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Attendance.App"
              xmlns:local="using:Attendance"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
+   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="Styles/ButtonStyles.axaml"></StyleInclude>
+        <StyleInclude Source="Styles/TextBoxStyles.axaml"></StyleInclude>
     </Application.Styles>
+             
+
+    <!-- https://coolors.co/ffa400-009ffd-2a2a72-232528-eaf6ff -->             
+    <Application.Resources>
+       <SolidColorBrush x:Key="PrimaryBackground">#232528</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryForeground">#EAF6FF</SolidColorBrush>
+        <SolidColorBrush x:Key="Caution">#FFA400</SolidColorBrush>
+        <SolidColorBrush x:Key="Normal">#009FFD</SolidColorBrush>
+        <SolidColorBrush x:Key="Different">#2A2A72</SolidColorBrush>
+    </Application.Resources>
 </Application>

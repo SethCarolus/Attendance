@@ -2,37 +2,62 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Attendance.Views.GroupsView">
-    <StackPanel>
-        <Label>Groups</Label>
+             xmlns:controls="clr-namespace:Attendance.Controls"
+             xmlns:viewModels="clr-namespace:Attendance.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignWidth="800" 
+             d:DesignHeight="500"
+             x:Class="Attendance.Views.GroupsView"
+             x:DataType="viewModels:GroupsViewModel">
+    
+    <Design.DataContext>
+        <viewModels:GroupsViewModel></viewModels:GroupsViewModel>
+    </Design.DataContext>
+    
+    <Grid
+        Margin="10"
+        RowDefinitions="1*, 5*, 4*"
+        RowSpacing="10">
+        <StackPanel
+            Grid.Row="0">
+            <Label FontSize="30">Groups</Label>
         
-        <ListBox ItemsSource="{Binding Groups}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Name:"/>
-                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Description:"/>
-                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <Rectangle Height="1" Fill="Gray" Margin="5,0"/>
+        </StackPanel>
         
-        <Label>Name:</Label>
-        <TextBox Text="{Binding Name }"/>
+        <StackPanel
+            Grid.Row="1">
+            <ScrollViewer Height="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding Groups}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="viewModels:GroupViewModel">
+                            <controls:GroupItem 
+                                GroupName="{Binding Name}" 
+                                Description="{Binding Description}"
+                                Margin="5"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         
-        <Label>Description:</Label>
-        <TextBox Text="{Binding Description}"/>
+            <Rectangle Height="1" Fill="Gray" Margin="5,10"/>    
+        </StackPanel>
         
-        <Button Command="{Binding AddCommand}" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
         
-    </StackPanel>
+        <StackPanel
+            Grid.Row="2">
+            <Label FontSize="20">Group</Label>
+        
+            <TextBox Watermark="Name" Text="{Binding Name }" Margin=" 0  5"/>
+        
+            <TextBox Watermark="Description" Text="{Binding Description}" Margin=" 0  5"/>
+        
+            <Button Classes="Different" Command="{Binding AddCommand}" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

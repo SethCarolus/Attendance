@@ -1,0 +1,41 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+            <StackPanel>
+                <Button Classes="Caution">Caution</Button>
+                <Button Classes="Default">Default</Button>
+                <Button Classes="Different">Default</Button>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+    
+    <Style
+        Selector="Button">
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryForeground}"></Setter>      
+        <Setter Property="CornerRadius" Value="12"></Setter>
+    </Style>
+    
+    <Style
+        Selector="Button.Caution">
+        <Setter Property="Background" Value="{DynamicResource Caution}"></Setter>
+    </Style>
+    
+    <Style
+        Selector="Button.Default">
+        <Setter Property="Background" Value="{DynamicResource Normal}"></Setter>
+    </Style>
+    
+    <Style
+        Selector="Button:pointerover">
+    </Style>
+    
+    <Style
+        Selector="Button.Different">
+        <Setter Property="Background" Value="{DynamicResource Different}"></Setter>
+    </Style>
+    
+</Styles>
