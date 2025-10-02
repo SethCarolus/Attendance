@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Attendance.Enums;
 using Attendance.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -24,11 +25,9 @@ public partial class GroupViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<PersonViewModel> _people;
     
-    [ObservableProperty]
-    private string _firstName;
+    [ObservableProperty]   
+    private ObservableCollection<PersonViewModel> _allPeople;
     
-    [ObservableProperty]
-    private string _lastName;
     
     public GroupViewModel(GroupModel group, MainWindowViewModel mainWindowViewModel)
     {
@@ -38,11 +37,18 @@ public partial class GroupViewModel : ViewModelBase
         Id = group.Id!.Value;
         Name = group.Name;
         Description = group.Description;
+        
         People = new();
-
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName,  p.LastName, this));
+            People.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.RemoveableFromGroup));
+        }
+        
+        var context =  new AttendanceContext();
+        AllPeople = new();
+        foreach (var p in context.People.Where(p => !group.People.Contains(p)))
+        {
+            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add));       
         }
     }
     
@@ -71,27 +77,7 @@ public partial class GroupViewModel : ViewModelBase
     {
         _mainWindowViewModel.CurrentViewModel = new GroupsViewModel(_mainWindowViewModel);
     }
-
-    [RelayCommand]
-    private void Add()
-    {
-        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
-        {
-            return;
-        }
-        
-        var context = new AttendanceContext();
-
-        var person = new PersonModel(FirstName, LastName);
-        var group = context.Groups.Include(g => g.People).First(g => g.Id == Id);
-        person.Groups.Add(group);
-        
-        context.People.Add(person);
-        context.SaveChanges();
-        
-        Refresh();
-    }
-
+    
     public void Refresh()
     {
         var context = new AttendanceContext();
@@ -100,7 +86,13 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName, p.LastName, this));
+            People.Add(new(p.Id, p.FirstName, p.LastName, this, PersonState.RemoveableFromGroup));
         }  
+        
+        AllPeople = new();
+        foreach (var p in context.People.Where(p => !group.People.Contains(p)))
+        {
+            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add));       
+        }
     }
 }

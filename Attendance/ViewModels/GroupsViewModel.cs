@@ -22,6 +22,12 @@ public partial class GroupsViewModel : ViewModelBase
     
     [ObservableProperty]
     private string _description;
+    
+    [ObservableProperty]
+    private string? _firstName;
+    
+    [ObservableProperty]
+    private string? _lastName;
 
     public GroupsViewModel(MainWindowViewModel mainWindowViewModel)
     {
@@ -47,7 +53,7 @@ public partial class GroupsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Add()
+    private void AddGroup()
     {
         if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Description))
         {
@@ -61,5 +67,30 @@ public partial class GroupsViewModel : ViewModelBase
 
         Name = "";
         Description = "";
+    }
+
+    [RelayCommand]
+    private void AddPerson()
+    {
+        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
+        {
+            return;
+        }
+        
+        var context = new AttendanceContext();
+
+        var person = new PersonModel(FirstName.Trim(), LastName.Trim());
+        
+        context.People.Add(person);
+        context.SaveChanges();
+
+        FirstName = "";
+        LastName = "";
+    }
+
+    [RelayCommand]
+    private void ViewPeople()
+    {
+        _mainWindowViewModel.CurrentViewModel = new PeopleViewModel(_mainWindowViewModel);
     }
 }

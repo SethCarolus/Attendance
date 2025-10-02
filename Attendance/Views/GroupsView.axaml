@@ -16,7 +16,7 @@
     
     <Grid
         Margin="10"
-        RowDefinitions="1*, 5*, 4*"
+        RowDefinitions="1*, 5*, 3*, 1*"
         RowSpacing="10">
         <StackPanel
             Grid.Row="0">
@@ -57,7 +57,9 @@
         
             <TextBox Watermark="Description" Text="{Binding Description}" Margin=" 0  5"/>
         
-            <Button Classes="Different" Command="{Binding AddCommand}" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button Classes="Different" Command="{Binding AddGroupCommand}" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
         </StackPanel>
+        
+        <Button Grid.Row="3" Content="View People" Command="{Binding ViewPeopleCommand}"/>
     </Grid>
 </UserControl>

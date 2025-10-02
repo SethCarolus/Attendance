@@ -2,6 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Attendance.Controls"
+             xmlns:viewModels="clr-namespace:Attendance.ViewModels"
+             xmlns:enums="clr-namespace:Attendance.Enums"
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              d:DesignHeight="450"
@@ -41,8 +44,30 @@
                 Content="Remove" 
                 HorizontalAlignment="Stretch" 
                 HorizontalContentAlignment="Center"
+                Command="{Binding RemoveFromGroupCommand}"
+                IsVisible="{Binding State,
+                            Converter={x:Static ObjectConverters.Equal},
+                            ConverterParameter={x:Static enums:PersonState.RemoveableFromGroup}}"/>
+            
+            <Button 
+                Classes="Caution" 
+                Content="Remove" 
+                HorizontalAlignment="Stretch" 
+                HorizontalContentAlignment="Center"
                 Command="{Binding RemoveCommand}"
-                CommandParameter="{Binding Group}"/>
+                IsVisible="{Binding State,
+                            Converter={x:Static ObjectConverters.Equal},
+                            ConverterParameter={x:Static enums:PersonState.Remove}}"/>
+            
+            <Button 
+                Classes="Default" 
+                Content="Add" 
+                HorizontalAlignment="Stretch" 
+                HorizontalContentAlignment="Center"
+                Command="{Binding AddToGroupCommand}"
+                IsVisible="{Binding State,
+                            Converter={x:Static ObjectConverters.Equal},
+                            ConverterParameter={x:Static enums:PersonState.Add}}"/>
         </StackPanel>
         
     </Border>
