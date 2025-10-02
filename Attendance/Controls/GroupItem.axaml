@@ -27,14 +27,16 @@
                 Classes="Default"
                 Content="View"
                 HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center"/>   
+                HorizontalContentAlignment="Center"
+                Command="{Binding ViewCommand}"/>   
             
             <Button 
                 Grid.Row="3"
                 Classes="Caution"
                 Content="Remove"
                 HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center"/>            
+                HorizontalContentAlignment="Center"
+                Command="{Binding RemoveCommand}"/>            
 
         </Grid>
     </Border>

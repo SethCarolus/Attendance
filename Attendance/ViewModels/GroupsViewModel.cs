@@ -1,6 +1,9 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using Attendance.Models;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +14,8 @@ public partial class GroupsViewModel : ViewModelBase
 {
     [ObservableProperty]
     private ObservableCollection<GroupViewModel> _groups;
-    
-    private AttendanceContext _attendanceContext;
+
+    private MainWindowViewModel _mainWindowViewModel;
 
     [ObservableProperty]
     private string _name;
@@ -20,26 +23,27 @@ public partial class GroupsViewModel : ViewModelBase
     [ObservableProperty]
     private string _description;
 
-    public GroupsViewModel()
+    public GroupsViewModel(MainWindowViewModel mainWindowViewModel)
     {
-        _attendanceContext = new AttendanceContext();
+        _mainWindowViewModel = mainWindowViewModel ?? throw new ArgumentNullException(nameof(mainWindowViewModel));
 
-        LoadData();
+        LoadDataAsync();
     }
 
-    private void LoadData()
+    private void LoadDataAsync()
     {
         Groups = new();
-        foreach (var group in _attendanceContext.Groups.Include(groupModel => groupModel.People))
+
+        var context = new AttendanceContext();
+        
+        var groups = context.Groups.Include(g => g.People).ToList();
+
+        foreach (var group in groups)
         {
-            var gvm = new GroupViewModel(group.Name, group.Description, new());
-            
-            foreach (var person in group.People)
-            {
-                gvm.People.Add(new(person.Id, person.FirstName, person.LastName));
-            }
+            var gvm = new GroupViewModel(group, _mainWindowViewModel);
             Groups.Add(gvm);
-        } 
+        }
+        
     }
 
     [RelayCommand]
@@ -49,9 +53,11 @@ public partial class GroupsViewModel : ViewModelBase
         {
             return;
         }
-        _attendanceContext.Add(new GroupModel(Name, Description));
-        _attendanceContext.SaveChanges();
-        LoadData();
+        
+        var context = new AttendanceContext();
+        context.Add(new GroupModel(null,Name, Description));
+        context.SaveChanges();
+        LoadDataAsync();
 
         Name = "";
         Description = "";

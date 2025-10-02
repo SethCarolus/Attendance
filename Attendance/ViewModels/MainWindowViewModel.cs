@@ -8,6 +8,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private ViewModelBase _CurrentViewModel;
     public MainWindowViewModel()
     {
-        _CurrentViewModel = new GroupsViewModel();
+        _CurrentViewModel = new GroupsViewModel(this);
     }
 }

@@ -20,4 +20,12 @@ public class AttendanceContext: DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder options) 
         => options.UseSqlite($"Data Source={DbPath}");
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<GroupModel>()
+            .HasMany(g => g.People)
+            .WithMany(p => p.Groups)
+            .UsingEntity(j => j.ToTable("GroupPeople"));
+    }
 }

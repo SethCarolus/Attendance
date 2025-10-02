@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Attendance.Models;
 
 public class PersonModel
@@ -5,12 +7,13 @@ public class PersonModel
     public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public List<GroupModel> Groups { get; set; }
     
-    public PersonModel(int id, string firstName, string lastName)
+    public PersonModel(string firstName, string lastName)
     {
-        Id = id;
         FirstName = firstName;
         LastName = lastName;
+        Groups = new();
     }
 
     public PersonModel()

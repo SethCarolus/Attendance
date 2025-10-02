@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+             d:DesignWidth="800" 
+             d:DesignHeight="450"
+             x:Class="Attendance.Controls.PersonItem"
+             x:Name="personItem">
+    <Border
+        Margin="10"
+        Padding="10"
+        BorderBrush="White"
+        BorderThickness="1"
+        CornerRadius="4">
+        
+        <StackPanel>
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+                <Label Content="Id: "/>
+                <TextBlock Text="{Binding Id, ElementName=personItem}" VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+                <Label Content="First Name:"/>
+                <TextBlock Text="{Binding FirstName, ElementName=personItem}" VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+                <Label Content="Last Name:"/>
+                <TextBlock Text="{Binding LastName, ElementName=personItem}" VerticalAlignment="Center"/>    
+            </StackPanel>
+            
+            <Button 
+                Classes="Caution" 
+                Content="Remove" 
+                HorizontalAlignment="Stretch" 
+                HorizontalContentAlignment="Center"
+                Command="{Binding RemoveCommand}"
+                CommandParameter="{Binding Group}"/>
+        </StackPanel>
+        
+    </Border>
+</UserControl>

@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Attendance.Controls"
+             xmlns:viewModels="clr-namespace:Attendance.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Attendance.Views.GroupView">
+    <Grid
+        Margin="10"
+        RowDefinitions="1*, 1*, 5*, 3*"
+        RowSpacing="10">
+        <Grid ColumnDefinitions="1*, 9*">
+            <Button Content="Back" Command="{Binding BackCommand}"/>
+        </Grid>
+        
+        <StackPanel
+            Grid.Row="1">
+            <Label FontSize="30" Content="{Binding Name}" />
+            <TextBlock FontSize="20" Text="{Binding Description}" />
+            <Rectangle Height="1" Fill="Gray" Margin="5,5" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2" Margin=" 0 15">
+            <Grid RowDefinitions="9*, 1*">
+                <ItemsRepeater
+                    ItemsSource="{Binding People}">
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate
+                            DataType="viewModels:PersonViewModel">
+                            <controls:PersonItem Id="{Binding Id}" FirstName="{Binding FirstName}" LastName="{Binding LastName}" Group="{Binding $parent[viewModels:GroupViewModel]}" />
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+
+                <Rectangle Grid.Row="1" Height="1" Fill="Gray" Margin="5,10" />
+            </Grid>
+        </ScrollViewer>
+
+
+        <StackPanel
+            Grid.Row="3">
+            <Label FontSize="20">Person</Label>
+
+            <TextBox Watermark="First Name" Text="{Binding FirstName}" Margin=" 0  5" />
+
+            <TextBox Watermark="Last Name" Text="{Binding LastName}" Margin=" 0  5" />
+
+            <Button Classes="Different" Command="{Binding AddCommand}" Content="Add" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</UserControl>
