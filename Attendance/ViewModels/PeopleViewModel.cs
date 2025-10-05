@@ -1,16 +1,17 @@
 using System.Collections.ObjectModel;
-using System.Linq;
 using Attendance.Enums;
 using Attendance.Models;
+using Attendance.Services.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
 
 namespace Attendance.ViewModels;
 
 public partial class PeopleViewModel : ViewModelBase
 {
-    private MainWindowViewModel _mainWindowViewModel;
+    private readonly INavigationService _navigationService;
+    private readonly IDatabaseService _databaseService;
+    
     [ObservableProperty]
     private ObservableCollection<PersonViewModel> _people;
     
@@ -20,16 +21,17 @@ public partial class PeopleViewModel : ViewModelBase
     [ObservableProperty]
     private string? _lastName;
 
-    public PeopleViewModel(MainWindowViewModel mainWindowViewModel)
+    public PeopleViewModel(INavigationService navigationService, IDatabaseService databaseService)
     {
-        _mainWindowViewModel = mainWindowViewModel;
+        _navigationService = navigationService;
+        _databaseService = databaseService;
         Refresh();
     }
 
     [RelayCommand]
     private void Back()
     {
-        _mainWindowViewModel.CurrentViewModel = new GroupsViewModel(_mainWindowViewModel);
+        _navigationService.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
@@ -40,12 +42,8 @@ public partial class PeopleViewModel : ViewModelBase
             return;
         }
         
-        var context = new AttendanceContext();
-
         var person = new PersonModel(FirstName, LastName);
-        
-        context.People.Add(person);
-        context.SaveChanges();
+        _databaseService.AddPerson(person);
 
         FirstName = "";
         LastName = "";
@@ -54,12 +52,10 @@ public partial class PeopleViewModel : ViewModelBase
 
     private void Refresh()
     {
-        var context = new AttendanceContext();
-        
         People = new();
-        foreach (var person in context.People)
+        foreach (var person in _databaseService.GetPeople())
         {
-            People.Add(new(person.Id, person.FirstName, person.LastName, null, PersonState.Remove));
+            People.Add(new(person.Id, person.FirstName, person.LastName, null, PersonState.Remove, _databaseService, _navigationService));
         }       
     }
 }

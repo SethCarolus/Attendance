@@ -1,21 +1,17 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
 using Attendance.Models;
-using Avalonia.Platform.Storage;
+using Attendance.Services.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-
 namespace Attendance.ViewModels;
 
 public partial class GroupsViewModel : ViewModelBase
 {
+    private readonly INavigationService _navigationService;
+    private readonly IDatabaseService _databaseService;
+    
     [ObservableProperty]
     private ObservableCollection<GroupViewModel> _groups;
-
-    private MainWindowViewModel _mainWindowViewModel;
 
     [ObservableProperty]
     private string _name;
@@ -29,24 +25,20 @@ public partial class GroupsViewModel : ViewModelBase
     [ObservableProperty]
     private string? _lastName;
 
-    public GroupsViewModel(MainWindowViewModel mainWindowViewModel)
+    public GroupsViewModel(INavigationService navigationService, IDatabaseService databaseService)
     {
-        _mainWindowViewModel = mainWindowViewModel ?? throw new ArgumentNullException(nameof(mainWindowViewModel));
-
+        _navigationService = navigationService;
+        _databaseService = databaseService;
         LoadDataAsync();
     }
 
     private void LoadDataAsync()
     {
         Groups = new();
-
-        var context = new AttendanceContext();
         
-        var groups = context.Groups.Include(g => g.People).ToList();
-
-        foreach (var group in groups)
+        foreach (var group in _databaseService.GetGroups())
         {
-            var gvm = new GroupViewModel(group, _mainWindowViewModel);
+            var gvm = new GroupViewModel(group, _navigationService, _databaseService);
             Groups.Add(gvm);
         }
         
@@ -60,11 +52,9 @@ public partial class GroupsViewModel : ViewModelBase
             return;
         }
         
-        var context = new AttendanceContext();
-        context.Add(new GroupModel(null,Name, Description));
-        context.SaveChanges();
-        LoadDataAsync();
+        _databaseService.AddGroup(new GroupModel(null,Name, Description));
 
+        LoadDataAsync();
         Name = "";
         Description = "";
     }
@@ -77,12 +67,8 @@ public partial class GroupsViewModel : ViewModelBase
             return;
         }
         
-        var context = new AttendanceContext();
-
         var person = new PersonModel(FirstName.Trim(), LastName.Trim());
-        
-        context.People.Add(person);
-        context.SaveChanges();
+        _databaseService.AddPerson(person);
 
         FirstName = "";
         LastName = "";
@@ -91,6 +77,6 @@ public partial class GroupsViewModel : ViewModelBase
     [RelayCommand]
     private void ViewPeople()
     {
-        _mainWindowViewModel.CurrentViewModel = new PeopleViewModel(_mainWindowViewModel);
+        _navigationService.NavigateTo<PeopleViewModel>();
     }
 }

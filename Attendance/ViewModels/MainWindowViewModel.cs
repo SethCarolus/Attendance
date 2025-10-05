@@ -1,13 +1,21 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Attendance.Services.Contracts;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Attendance.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly INavigationService _navigationService;
     [ObservableProperty]
-    private ViewModelBase _CurrentViewModel;
-    public MainWindowViewModel()
+    private ViewModelBase _currentViewModel;
+    public MainWindowViewModel(INavigationService navigationService)
     {
-        _CurrentViewModel = new GroupsViewModel(this);
+        _navigationService = navigationService;
+
+        _navigationService.CurrentViewModelChanged += (s, e) =>
+        {
+            CurrentViewModel = e;
+        };
+        _navigationService.NavigateTo<GroupsViewModel>();
     }
 }

@@ -3,9 +3,12 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Attendance.Services;
+using Attendance.Services.Contracts;
 using Avalonia.Markup.Xaml;
 using Attendance.ViewModels;
 using Attendance.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Attendance;
 
@@ -18,6 +21,21 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var collection = new ServiceCollection();
+        
+        // Services
+        collection.AddSingleton<AttendanceContext>();
+        collection.AddSingleton<INavigationService, NavigationService>();
+        collection.AddTransient<IDatabaseService, DatabaseService>();
+        
+        // View Models
+        collection.AddTransient<MainWindowViewModel>();
+        collection.AddTransient<GroupsViewModel>();
+        collection.AddTransient<PeopleViewModel>();
+        
+        var services = collection.BuildServiceProvider();
+        
+        var vm = services.GetRequiredService<MainWindowViewModel>();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -25,7 +43,7 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = vm
             };
         }
 

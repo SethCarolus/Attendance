@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Attendance.Enums;
 using Attendance.Models;
+using Attendance.Services.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ namespace Attendance.ViewModels;
 
 public partial class PersonViewModel : ViewModelBase
 {
+    private readonly IDatabaseService _databaseService;
+    private readonly INavigationService _navigationService;
 
     [ObservableProperty]
     private int _id;
@@ -26,8 +29,10 @@ public partial class PersonViewModel : ViewModelBase
     [ObservableProperty]
     private PersonState _state;
     
-    public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, PersonState state)
+    public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, PersonState state, IDatabaseService databaseService, INavigationService navigationService)
     {
+        _databaseService = databaseService;
+        _navigationService  = navigationService;
         Id = id;
         FirstName = firstName;
         LastName = lastName;
@@ -39,24 +44,16 @@ public partial class PersonViewModel : ViewModelBase
     private void Remove()
     {
         if (State != PersonState.Remove) return;
-        
-        var context = new AttendanceContext();
-        var person = context.People.FirstOrDefault(p => p.Id == Id);
-        if (person == null) return;
-        context.People.Remove(person);
-        context.SaveChanges();
+        _databaseService.DeletePersonWith(Id);
+        _navigationService.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
     private void RemoveFromGroup()
     {
         if (State != PersonState.RemoveableFromGroup) return;
-        
-        var context = new AttendanceContext();
-        var person = context.People.Include(p => p.Groups).Single(p => p.Id == Id);
-        var group = context.Groups.Include(g => g.People).Single(g => g.Id == Group.Id);
-        person.Groups!.Remove(group);
-        context.SaveChanges();
+
+        _databaseService.DeletePersonFromGroup(Id, Group.Id);
         Group.Refresh();
     }
     

@@ -4,5 +4,7 @@ public enum PersonState
 {
     Remove,
     Add,
-    RemoveableFromGroup
+    RemoveableFromGroup,
+    Absent,
+    Present
 }

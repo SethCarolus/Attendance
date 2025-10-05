@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Attendance.Enums;
 using Attendance.Models;
+using Attendance.Services;
+using Attendance.Services.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +13,8 @@ namespace Attendance.ViewModels;
 
 public partial class GroupViewModel : ViewModelBase
 {
-    private MainWindowViewModel _mainWindowViewModel;
+    private readonly INavigationService _navigationService;
+    private readonly IDatabaseService _databaseService;
     
     [ObservableProperty]
     private int _id;
@@ -29,10 +32,12 @@ public partial class GroupViewModel : ViewModelBase
     private ObservableCollection<PersonViewModel> _allPeople;
     
     
-    public GroupViewModel(GroupModel group, MainWindowViewModel mainWindowViewModel)
+    public GroupViewModel(GroupModel group, INavigationService navigationService, IDatabaseService databaseService)
     {
         ArgumentNullException.ThrowIfNull(group);
-        _mainWindowViewModel = mainWindowViewModel ?? throw new ArgumentNullException(nameof(mainWindowViewModel));
+        
+        _navigationService = navigationService;
+        _databaseService = databaseService;
         
         Id = group.Id!.Value;
         Name = group.Name;
@@ -41,58 +46,50 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.RemoveableFromGroup));
+            People.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.RemoveableFromGroup, databaseService, _navigationService));
         }
         
         var context =  new AttendanceContext();
         AllPeople = new();
         foreach (var p in context.People.Where(p => !group.People.Contains(p)))
         {
-            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add));       
+            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add, databaseService, navigationService));       
         }
     }
     
     [RelayCommand]
     private void View()
     {
-        _mainWindowViewModel.CurrentViewModel = this;
+        _navigationService.NavigateTo(this);
     }
 
     [RelayCommand]
     private void Remove()
     {
-        var context = new AttendanceContext();
-
-        var group = context.Groups.FirstOrDefault(g => g.Id == Id);
-        
-        if (group == null) return;
-        
-        context.Groups.Remove(group);
-        context.SaveChanges();
-        _mainWindowViewModel.CurrentViewModel = new GroupsViewModel(_mainWindowViewModel);
+        _databaseService.DeleteGroupWith(Id);
+        _navigationService.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
     private void Back()
     {
-        _mainWindowViewModel.CurrentViewModel = new GroupsViewModel(_mainWindowViewModel);
+        _navigationService.NavigateTo<GroupsViewModel>();
     }
     
     public void Refresh()
     {
-        var context = new AttendanceContext();
-        var group = context.Groups.Include(g => g.People).First(g => g.Id == Id);
+        var group = _databaseService.GetGroupWith(Id);
 
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName, p.LastName, this, PersonState.RemoveableFromGroup));
+            People.Add(new(p.Id, p.FirstName, p.LastName, this, PersonState.RemoveableFromGroup, _databaseService, _navigationService));
         }  
         
         AllPeople = new();
-        foreach (var p in context.People.Where(p => !group.People.Contains(p)))
+        foreach (var p in _databaseService.GetPeople().Where(p => !group.People.Contains(p)))
         {
-            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add));       
+            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add, _databaseService, _navigationService));       
         }
     }
 }
