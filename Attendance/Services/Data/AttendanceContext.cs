@@ -9,6 +9,10 @@ public class AttendanceContext: DbContext
     public DbSet<PersonModel> People { get; set; }
     public DbSet<GroupModel> Groups { get; set; }
     
+    public DbSet<SessionModel> Sessions { get; set; }
+    
+    public DbSet<AttendanceModel> Attendances { get; set; }
+    
     public string DbPath { get; }
 
     public AttendanceContext()
@@ -27,5 +31,6 @@ public class AttendanceContext: DbContext
             .HasMany(g => g.People)
             .WithMany(p => p.Groups)
             .UsingEntity(j => j.ToTable("GroupPeople"));
+        
     }
 }

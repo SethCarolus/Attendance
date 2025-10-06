@@ -16,4 +16,12 @@ public interface IDatabaseService
     public IList<PersonModel> GetPeople();
     public IList<PersonModel> GetPeopleInGroupWith(int id);
     public void DeletePersonFromGroup(int personId, int groupId);
+    
+    public void AddSession(SessionModel session);
+
+    public IList<SessionModel> GetSessionsForGroupWith(int id);
+    public void DeleteSessionWith(int id);
+    public void DeleteAttendance(int personId, int sessionId);
+    public void AddAttendance(int  personId, int sessionId);
+    public bool WasPresent(int personId, int sessionId);
 }

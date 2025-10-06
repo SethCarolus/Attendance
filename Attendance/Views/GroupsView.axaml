@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+ <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,13 +21,12 @@
         <StackPanel
             Grid.Row="0">
             <Label FontSize="30">Groups</Label>
-        
             <Rectangle Height="1" Fill="Gray" Margin="5,0"/>
         </StackPanel>
         
         <StackPanel
             Grid.Row="1">
-            <ScrollViewer Height="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <ScrollViewer Height="250" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Groups}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

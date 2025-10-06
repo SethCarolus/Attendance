@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Attendance.Controls.SessionItem"
+             x:Name="sessionItem">
+    <Border
+        Margin="10"
+        Padding="10"
+        BorderBrush="White"
+        BorderThickness="1"
+        CornerRadius="4">
+        
+        <ScrollViewer
+            Padding="5">
+            <StackPanel
+                Spacing="5">
+                <Label Content="{Binding SessionName, ElementName=sessionItem}" HorizontalAlignment="Center" FontSize="20"/>
+                <TextBlock 
+                    Grid.Row="1"
+                    Text="{Binding Description, ElementName=sessionItem}"
+                    HorizontalAlignment="Center"
+                    TextWrapping="Wrap"/>
+                
+                <Button 
+                    Grid.Row="3"
+                    Classes="Different"
+                    Content="Take Attendance"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding ViewCommand}"/>
+                
+                <Button 
+                    Grid.Row="4"
+                    Classes="Default"
+                    Content="Edit"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding EditCommand}"/> 
+                
+                <Button 
+                    Grid.Row="4"
+                    Classes="Caution"
+                    Content="Remove"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding RemoveCommand}"/> 
+
+            </StackPanel>
+        </ScrollViewer>
+    </Border>    
+</UserControl>

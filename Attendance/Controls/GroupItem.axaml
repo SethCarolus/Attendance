@@ -13,7 +13,7 @@
         CornerRadius="4">
         
         <Grid
-            RowDefinitions="2*, 4*, 2*, 2*"
+            RowDefinitions="2*, 2*, 2*, 2*, 2*"
             RowSpacing="5">
             <Label Content="{Binding GroupName, ElementName=groupItem}" HorizontalAlignment="Center" FontSize="20"/>
             <TextBlock 
@@ -28,10 +28,19 @@
                 Content="View"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
-                Command="{Binding ViewCommand}"/>   
+                Command="{Binding ViewCommand}"/>
             
             <Button 
                 Grid.Row="3"
+                Classes="Different"
+                Content="Take Attendance"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Command="{Binding SessionsCommand}"/>
+            
+            
+            <Button 
+                Grid.Row="4"
                 Classes="Caution"
                 Content="Remove"
                 HorizontalAlignment="Stretch"

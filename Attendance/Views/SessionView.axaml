@@ -4,13 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:Attendance.Controls"
              xmlns:viewModels="clr-namespace:Attendance.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignWidth="800" 
-             d:DesignHeight="450"
-             x:Class="Attendance.Views.PeopleView">
+             mc:Ignorable="d"
+             x:Class="Attendance.Views.SessionView">
+    <Design.DataContext>
+        <viewModels:SessionViewModel/>
+    </Design.DataContext>
+    
     <Grid
         Margin="10"
-        RowDefinitions="1*, 1*, 5*, 4*"
+        RowDefinitions="1*, 1*, 8*"
         RowSpacing="10">
         
         <Grid ColumnDefinitions="1*, 9*">
@@ -19,34 +21,22 @@
         
         <StackPanel
             Grid.Row="1">
-            <Label FontSize="30">People</Label>
-        
+            <Label FontSize="30" Content="{Binding Name}"/>
             <Rectangle Height="1" Fill="Gray" Margin="5,0"/>
         </StackPanel>
         
         <ScrollViewer
             Grid.Row="2">
             <ItemsRepeater
-                ItemsSource="{Binding People}">
+                ItemsSource="{Binding Attendances}">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate
-                        DataType="viewModels:PersonViewModel">
-                        <controls:PersonItem Id="{Binding Id}" FirstName="{Binding FirstName}" LastName="{Binding LastName}" Group="{Binding $parent[viewModels:GroupViewModel]}" />
+                        DataType="viewModels:AttendanceViewModel">
+                        <controls:AttendanceItem Id="{Binding Person.Id}" FirstName="{Binding Person.FirstName}" LastName="{Binding Person.LastName}"/>
                     </DataTemplate>
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
         </ScrollViewer>
         
-        <StackPanel
-            Grid.Row="3">
-            <Rectangle Height="1" Fill="Gray" Margin="5,5"/>
-            <Label FontSize="20">Person</Label>
-        
-            <TextBox Watermark="First Name" Text="{Binding FirstName }" Margin=" 0  5"/>
-        
-            <TextBox Watermark="Last Name" Text="{Binding LastName}" Margin=" 0  5"/>
-        
-            <Button Classes="Different" Command="{Binding AddCommand}" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-        </StackPanel>
     </Grid>
 </UserControl>

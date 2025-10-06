@@ -52,7 +52,7 @@ public partial class GroupsViewModel : ViewModelBase
             return;
         }
         
-        _databaseService.AddGroup(new GroupModel(null,Name, Description));
+        _databaseService.AddGroup(new GroupModel(Name, Description));
 
         LoadDataAsync();
         Name = "";

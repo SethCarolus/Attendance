@@ -32,6 +32,7 @@ public partial class App : Application
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<GroupsViewModel>();
         collection.AddTransient<PeopleViewModel>();
+        collection.AddTransient<SessionsViewModel>();
         
         var services = collection.BuildServiceProvider();
         

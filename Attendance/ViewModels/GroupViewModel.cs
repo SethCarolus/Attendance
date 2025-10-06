@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Attendance.Enums;
 using Attendance.Models;
 using Attendance.Services;
 using Attendance.Services.Contracts;
+using Attendance.ViewModels.Parameters;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -38,8 +40,8 @@ public partial class GroupViewModel : ViewModelBase
         
         _navigationService = navigationService;
         _databaseService = databaseService;
-        
-        Id = group.Id!.Value;
+
+        Id = group.Id;
         Name = group.Name;
         Description = group.Description;
         
@@ -61,6 +63,12 @@ public partial class GroupViewModel : ViewModelBase
     private void View()
     {
         _navigationService.NavigateTo(this);
+    }
+
+    [RelayCommand]
+    private void Sessions()
+    {
+        _navigationService.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = this});
     }
 
     [RelayCommand]
