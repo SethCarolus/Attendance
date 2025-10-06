@@ -38,6 +38,10 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
         _navigationService  =  navigationService;
         _databaseService = databaseService;
     }
+
+    public SessionsViewModel()
+    {
+    }
     
     [RelayCommand]
     private void Back()

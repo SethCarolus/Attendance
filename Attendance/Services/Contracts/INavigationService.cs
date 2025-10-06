@@ -10,5 +10,5 @@ public interface INavigationService
     public void NavigateTo<T, TParam>(TParam parameters) where T : ViewModelBase;
     void NavigateTo(ViewModelBase viewModel);
     event EventHandler<ViewModelBase> CurrentViewModelChanged;
-    ViewModelBase CurrentViewModel { get; }
+    ViewModelBase? CurrentViewModel { get; }
 }

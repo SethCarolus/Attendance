@@ -11,7 +11,6 @@ namespace Attendance.Services;
 public class DatabaseService : IDatabaseService
 {
     private readonly AttendanceContext _context;
-    private IDatabaseService _databaseServiceImplementation;
 
     public DatabaseService(AttendanceContext context)
     {

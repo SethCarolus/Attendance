@@ -28,6 +28,10 @@ public partial class PersonViewModel : ViewModelBase
     
     [ObservableProperty]
     private PersonState _state;
+
+    public PersonViewModel()
+    {
+    }
     
     public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, PersonState state, IDatabaseService databaseService, INavigationService navigationService)
     {
@@ -51,7 +55,7 @@ public partial class PersonViewModel : ViewModelBase
     [RelayCommand]
     private void RemoveFromGroup()
     {
-        if (State != PersonState.RemoveableFromGroup) return;
+        if (State != PersonState.RemovableFromGroup) return;
 
         _databaseService.DeletePersonFromGroup(Id, Group.Id);
         Group.Refresh();

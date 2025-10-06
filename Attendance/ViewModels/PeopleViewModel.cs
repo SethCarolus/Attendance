@@ -28,6 +28,10 @@ public partial class PeopleViewModel : ViewModelBase
         Refresh();
     }
 
+    public PeopleViewModel()
+    {
+    }
+
     [RelayCommand]
     private void Back()
     {

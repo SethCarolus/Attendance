@@ -32,6 +32,10 @@ public partial class GroupsViewModel : ViewModelBase
         LoadDataAsync();
     }
 
+    public GroupsViewModel()
+    {
+    }
+
     private void LoadDataAsync()
     {
         Groups = new();

@@ -48,7 +48,7 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.RemoveableFromGroup, databaseService, _navigationService));
+            People.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.RemovableFromGroup, databaseService, _navigationService));
         }
         
         var context =  new AttendanceContext();
@@ -57,6 +57,10 @@ public partial class GroupViewModel : ViewModelBase
         {
             AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add, databaseService, navigationService));       
         }
+    }
+
+    public GroupViewModel()
+    {
     }
     
     [RelayCommand]
@@ -91,7 +95,7 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName, p.LastName, this, PersonState.RemoveableFromGroup, _databaseService, _navigationService));
+            People.Add(new(p.Id, p.FirstName, p.LastName, this, PersonState.RemovableFromGroup, _databaseService, _navigationService));
         }  
         
         AllPeople = new();

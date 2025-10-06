@@ -2,9 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Attendance.ViewModels"
              mc:Ignorable="d" 
              x:Class="Attendance.Controls.GroupItem"
              x:Name="groupItem">
+    <Design.DataContext>
+        <viewModels:GroupViewModel/>
+    </Design.DataContext>
+    
     <Border
         Margin="10"
         Padding="10"

@@ -12,7 +12,7 @@ namespace Attendance.Services;
 public class NavigationService: INavigationService
 {
     private readonly IServiceProvider _serviceProvider;
-    private ViewModelBase _currentViewModel;
+    private ViewModelBase? _currentViewModel;
 
     public NavigationService(IServiceProvider serviceProvider)
     {
@@ -48,5 +48,5 @@ public class NavigationService: INavigationService
 
     public event EventHandler<ViewModelBase>? CurrentViewModelChanged;
 
-    public ViewModelBase CurrentViewModel => _currentViewModel;
+    public ViewModelBase? CurrentViewModel => _currentViewModel;
 }

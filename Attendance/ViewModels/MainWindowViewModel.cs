@@ -18,4 +18,8 @@ public partial class MainWindowViewModel : ViewModelBase
         };
         _navigationService.NavigateTo<GroupsViewModel>();
     }
+
+    public MainWindowViewModel()
+    {
+    }
 }
