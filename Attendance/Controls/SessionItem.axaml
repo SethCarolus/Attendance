@@ -18,10 +18,16 @@
         CornerRadius="4">
         
         <ScrollViewer
-            Padding="5">
+            Padding="5"
+            MinWidth="200"
+            MinHeight="200"
+            >
             <StackPanel
                 Spacing="5">
-                <Label Content="{Binding SessionName, ElementName=sessionItem}" HorizontalAlignment="Center" FontSize="20"/>
+                <Label 
+                    Content="{Binding SessionName, ElementName=sessionItem}" 
+                    HorizontalAlignment="Center" 
+                    FontSize="20"/>
                 <TextBlock 
                     Grid.Row="1"
                     Text="{Binding Description, ElementName=sessionItem}"

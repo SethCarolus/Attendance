@@ -21,10 +21,13 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
     private  ObservableCollection<SessionViewModel> _sessions;
 
     [ObservableProperty]
-    private string? name;
+    private string? _name;
     
     [ObservableProperty]
-    private string? description;
+    private string? _description;
+
+    [ObservableProperty]
+    private DateTime _selectedDate =  DateTime.Now;
 
     [ObservableProperty]    
     private TimeSpan? _start;
@@ -53,7 +56,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
     private void AddSession()
     {
         var group = new GroupModel(_groupViewModel.Id, _groupViewModel.Name, _groupViewModel.Description);
-        var session = new SessionModel(group, Name, Description, DateOnly.FromDateTime(DateTime.Now), null, null);
+        var session = new SessionModel(group, Name, Description, DateOnly.FromDateTime(SelectedDate), null, null);
         
         if (Start.HasValue && End.HasValue)
         {
@@ -70,7 +73,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
         Sessions = new();
         foreach (var s in 
                  _databaseService.GetSessionsForGroupWith(_groupViewModel.Id)
-                     .Where( s => s.Date == DateOnly.FromDateTime(DateTime.Now) ))
+                     .Where( s => s.Date == DateOnly.FromDateTime(SelectedDate)))
         {
             Sessions.Add(
                 new(
@@ -84,6 +87,11 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
                     _navigationService, 
                     _databaseService));
         }
+    }
+
+    partial void OnSelectedDateChanged(DateTime oldValue, DateTime newValue)
+    {
+        Refresh();
     }
 
     public void ReceiveParameter(SessionParameters parameters)
