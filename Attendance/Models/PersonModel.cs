@@ -16,6 +16,13 @@ public class PersonModel
         Groups = new();
     }
 
+    public PersonModel(int id, string firstName, string lastName)
+    {
+        Id = id;
+        FirstName = firstName;
+        LastName = lastName;
+    }
+
     public PersonModel()
     {
         

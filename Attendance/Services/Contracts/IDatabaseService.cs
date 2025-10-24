@@ -16,6 +16,8 @@ public interface IDatabaseService
     public IList<PersonModel> GetPeople();
     public IList<PersonModel> GetPeopleInGroupWith(int id);
     public void DeletePersonFromGroup(int personId, int groupId);
+
+    public void EditPerson(PersonModel person);
     
     public void AddSession(SessionModel session);
 

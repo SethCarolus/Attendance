@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Attendance.Enums;
 using Attendance.Models;
 using Attendance.Services.Contracts;
+using Attendance.ViewModels.Parameters;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -27,13 +29,18 @@ public partial class PersonViewModel : ViewModelBase
     private GroupViewModel _group; // Group Person is in (InGroup == True) or Group Person could be added to (InGroup == False).
     
     [ObservableProperty]
-    private PersonState _state;
+    private List<PersonState> _states;
+    
+    private bool IsRemovableFromGroup => States.Contains(PersonState.RemovableFromGroup);
+    private bool CanRemove => States.Contains(PersonState.Remove);
+    private bool CanAdd => States.Contains(PersonState.Add);
+    private bool CanEdit => States.Contains(PersonState.Edit);
 
     public PersonViewModel()
     {
     }
     
-    public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, PersonState state, IDatabaseService databaseService, INavigationService navigationService)
+    public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, List<PersonState> states, IDatabaseService databaseService, INavigationService navigationService)
     {
         _databaseService = databaseService;
         _navigationService  = navigationService;
@@ -41,13 +48,13 @@ public partial class PersonViewModel : ViewModelBase
         FirstName = firstName;
         LastName = lastName;
         Group = group;
-        State = state;
+        States = states;
     }
 
     [RelayCommand]
     private void Remove()
     {
-        if (State != PersonState.Remove) return;
+        if (States.Contains(PersonState.Remove)) return;
         _databaseService.DeletePersonWith(Id);
         _navigationService.NavigateTo<GroupsViewModel>();
     }
@@ -55,7 +62,7 @@ public partial class PersonViewModel : ViewModelBase
     [RelayCommand]
     private void RemoveFromGroup()
     {
-        if (State != PersonState.RemovableFromGroup) return;
+        if (States.Contains(PersonState.RemovableFromGroup)) return;
 
         _databaseService.DeletePersonFromGroup(Id, Group.Id);
         Group.Refresh();
@@ -64,7 +71,7 @@ public partial class PersonViewModel : ViewModelBase
     [RelayCommand]
     private void AddToGroup()
     {
-        if (State != PersonState.Add) return;
+        if (!States.Contains(PersonState.Add)) return;
         
         var context = new AttendanceContext();
 
@@ -80,5 +87,11 @@ public partial class PersonViewModel : ViewModelBase
         person.Groups.Add(group);
         context.SaveChanges();
         Group.Refresh();
+    }
+
+    [RelayCommand]
+    private void Edit()
+    {
+        _navigationService.NavigateTo<EditPersonViewModel, EditPersonParameters>(new() {Person = this});
     }
 }

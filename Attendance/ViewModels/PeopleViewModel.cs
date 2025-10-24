@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Attendance.Enums;
 using Attendance.Models;
@@ -59,7 +60,7 @@ public partial class PeopleViewModel : ViewModelBase
         People = new();
         foreach (var person in _databaseService.GetPeople())
         {
-            People.Add(new(person.Id, person.FirstName, person.LastName, null, PersonState.Remove, _databaseService, _navigationService));
+            People.Add(new(person.Id, person.FirstName, person.LastName, null, [PersonState.Remove, PersonState.Edit], _databaseService, _navigationService));
         }       
     }
 }

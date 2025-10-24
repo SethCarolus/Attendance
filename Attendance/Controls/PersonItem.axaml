@@ -21,7 +21,8 @@
         BorderThickness="1"
         CornerRadius="4">
         
-        <StackPanel>
+        <StackPanel
+            Spacing="5">
             <StackPanel
                 Orientation="Horizontal"
                 HorizontalAlignment="Center">
@@ -49,9 +50,7 @@
                 HorizontalAlignment="Stretch" 
                 HorizontalContentAlignment="Center"
                 Command="{Binding RemoveFromGroupCommand}"
-                IsVisible="{Binding State,
-                            Converter={x:Static ObjectConverters.Equal},
-                            ConverterParameter={x:Static enums:PersonState.RemovableFromGroup}}"/>
+                IsVisible="{Binding IsRemovableFromGroup}"/>
             
             <Button 
                 Classes="Caution" 
@@ -59,9 +58,7 @@
                 HorizontalAlignment="Stretch" 
                 HorizontalContentAlignment="Center"
                 Command="{Binding RemoveCommand}"
-                IsVisible="{Binding State,
-                            Converter={x:Static ObjectConverters.Equal},
-                            ConverterParameter={x:Static enums:PersonState.Remove}}"/>
+                IsVisible="{Binding CanRemove}"/>
             
             <Button 
                 Classes="Default" 
@@ -69,9 +66,16 @@
                 HorizontalAlignment="Stretch" 
                 HorizontalContentAlignment="Center"
                 Command="{Binding AddToGroupCommand}"
-                IsVisible="{Binding State,
-                            Converter={x:Static ObjectConverters.Equal},
-                            ConverterParameter={x:Static enums:PersonState.Add}}"/>
+                IsVisible="{Binding CanAdd}"/>
+            
+            <Button 
+                Classes="Default" 
+                Content="Edit" 
+                HorizontalAlignment="Stretch" 
+                HorizontalContentAlignment="Center"
+                Command="{Binding EditCommand}"
+                IsVisible="{Binding CanEdit}"/>            
+            
         </StackPanel>
         
     </Border>

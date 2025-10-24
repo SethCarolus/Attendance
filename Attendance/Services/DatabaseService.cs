@@ -83,6 +83,15 @@ public class DatabaseService : IDatabaseService
         _context.SaveChanges();
     }
 
+    public void EditPerson(PersonModel person)
+    {
+        var p = _context.People.FirstOrDefault(_p => _p.Id == person.Id);
+        
+        p.FirstName = person.FirstName;
+        p.LastName = person.LastName;
+        _context.SaveChanges();
+    }
+
     public void AddSession(SessionModel session)
     {
         ArgumentNullException.ThrowIfNull(session);

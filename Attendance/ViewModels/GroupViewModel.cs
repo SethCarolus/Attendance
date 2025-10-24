@@ -48,14 +48,14 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.RemovableFromGroup, databaseService, _navigationService));
+            People.Add(new(p.Id, p.FirstName,  p.LastName, this, [PersonState.RemovableFromGroup], databaseService, _navigationService));
         }
         
         var context =  new AttendanceContext();
         AllPeople = new();
         foreach (var p in context.People.Where(p => !group.People.Contains(p)))
         {
-            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add, databaseService, navigationService));       
+            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, [PersonState.Add], databaseService, navigationService));       
         }
     }
 
@@ -95,13 +95,13 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName, p.LastName, this, PersonState.RemovableFromGroup, _databaseService, _navigationService));
+            People.Add(new(p.Id, p.FirstName, p.LastName, this, [PersonState.RemovableFromGroup], _databaseService, _navigationService));
         }  
         
         AllPeople = new();
         foreach (var p in _databaseService.GetPeople().Where(p => !group.People.Contains(p)))
         {
-            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, PersonState.Add, _databaseService, _navigationService));       
+            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, [PersonState.Add], _databaseService, _navigationService));       
         }
     }
 }
