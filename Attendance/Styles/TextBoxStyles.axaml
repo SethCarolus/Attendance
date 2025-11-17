@@ -11,9 +11,8 @@
 
     <!-- Add Styles Here -->
     <Style
-        Selector="TextBox">
-        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryForeground}"></Setter>      
-        <Setter Property="CornerRadius" Value="12"></Setter>
+        Selector="TextBox">   
+        <Setter Property="CornerRadius" Value="4"></Setter>
         <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
         <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
     </Style>
