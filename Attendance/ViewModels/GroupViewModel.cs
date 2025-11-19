@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Attendance.Enums;
 using Attendance.Factories.Contracts;
@@ -92,6 +93,12 @@ public partial class GroupViewModel : ViewModelBase
         
         _database.DeleteGroupWith(Id);
         _navigation.NavigateTo<GroupsViewModel>();
+    }
+
+    [RelayCommand]
+    private async Task EditAsync()
+    {
+        _navigation.NavigateTo<EditGroupViewModel, EditGroupParameters>(new() { Group = this});
     }
 
     [RelayCommand]

@@ -4,6 +4,7 @@ using System.Linq;
 using Attendance.Models;
 using Attendance.Services.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel.__Internals;
+using HarfBuzzSharp;
 using Microsoft.EntityFrameworkCore;
 
 namespace Attendance.Services;
@@ -32,7 +33,14 @@ public class DatabaseService : IDatabaseService
         _context.Add(group);
         _context.SaveChanges();
     }
-    
+    public void EditGroup(GroupModel group)
+    {
+        var g = _context.Groups.FirstOrDefault(_g => _g.Id == group.Id);
+        g.Name = group.Name;
+        g.Description = group.Description;
+        _context.SaveChanges();
+    }
+
     public void DeleteGroupWith(int id)
     {
         var group = _context.Groups.FirstOrDefault(g => g.Id == id);

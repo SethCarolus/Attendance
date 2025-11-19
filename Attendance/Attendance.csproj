@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <LangVersion>13</LangVersion>
+        <ApplicationIcon>Assets\Attendance.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

@@ -39,14 +39,14 @@ public partial class GroupsViewModel : ViewModelBase
         _database = database;
         _groupViewModelFactory = groupViewModelFactory;
         _dialog = dialog;
-        LoadDataAsync();
+        LoadData();
     }
 
     public GroupsViewModel()
     {
     }
 
-    private void LoadDataAsync()
+    private void LoadData()
     {
         Groups = new();
         
@@ -67,7 +67,7 @@ public partial class GroupsViewModel : ViewModelBase
         
         _database.AddGroup(new GroupModel(Name, Description));
 
-        LoadDataAsync();
+        LoadData();
         Name = "";
         Description = "";
     }

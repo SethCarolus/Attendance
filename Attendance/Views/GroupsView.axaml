@@ -29,7 +29,7 @@
         
             <StackPanel
                 Grid.Row="1">
-                <ScrollViewer Height="250" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <ScrollViewer Height="300" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding Groups}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

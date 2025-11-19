@@ -51,8 +51,11 @@ public partial class App : Application
         collection.AddTransient<SessionsViewModel>();
         collection.AddTransient<EditPersonViewModel>();
         collection.AddTransient<EditSessionViewModel>();
+        collection.AddTransient<EditGroupViewModel>();
         
         var services = collection.BuildServiceProvider();
+
+        services.GetRequiredService<AttendanceContext>().Database.EnsureCreated();
         
         var vm = services.GetRequiredService<MainWindowViewModel>();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
