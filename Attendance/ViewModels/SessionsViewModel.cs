@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Attendance.Factories.Contracts;
 using Attendance.Models;
 using Attendance.Services.Contracts;
 using Attendance.ViewModels.Contracts;
@@ -15,6 +16,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
 
     private readonly INavigationService _navigationService;
     private readonly IDatabaseService _databaseService;
+    private readonly ISessionViewModelFactory _sessionViewModelFactory;
     private GroupViewModel _groupViewModel;
     
     [ObservableProperty]
@@ -36,10 +38,11 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
     private TimeSpan? _end;
         
     
-    public SessionsViewModel(INavigationService navigationService, IDatabaseService databaseService)
+    public SessionsViewModel(IAppContext appContext, ISessionViewModelFactory sessionViewModelFactory)
     {
-        _navigationService  =  navigationService;
-        _databaseService = databaseService;
+        _navigationService  =  appContext.NavigationService;
+        _databaseService = appContext.DatabaseService;
+        _sessionViewModelFactory = sessionViewModelFactory;
     }
 
     public SessionsViewModel()
@@ -76,16 +79,14 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
                      .Where( s => s.Date == DateOnly.FromDateTime(SelectedDate)))
         {
             Sessions.Add(
-                new(
-                    s.Id, 
-                    _groupViewModel, 
-                    s.Date ,
-                    s.Start, 
+                _sessionViewModelFactory.Create(s.Id,
+                    _groupViewModel,
+                    s.Date,
+                    s.Start,
                     s.End,
-                    s.Name, 
-                    s.Description, 
-                    _navigationService, 
-                    _databaseService));
+                    s.Name,
+                    s.Description
+                    ));
         }
     }
 

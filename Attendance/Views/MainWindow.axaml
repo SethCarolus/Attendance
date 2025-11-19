@@ -27,6 +27,15 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
-    <TransitioningContentControl Content="{Binding CurrentViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent"/>
+    <Grid>
+      <TransitioningContentControl Content="{Binding CurrentViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent"/>
+     <ContentControl 
+        ZIndex="1" 
+        IsVisible="{Binding CurrentDialog.IsOpen}"
+        IsHitTestVisible="{Binding CurrentDialog.IsOpen}" 
+        Content="{Binding CurrentDialog}"
+        Width="300"
+        Height="300"/>
+    </Grid>
 
 </Window>

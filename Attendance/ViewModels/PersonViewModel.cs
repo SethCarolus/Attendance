@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Attendance.Enums;
-using Attendance.Models;
 using Attendance.Services.Contracts;
+using Attendance.ViewModels.Dialogs;
 using Attendance.ViewModels.Parameters;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
 
 namespace Attendance.ViewModels;
 
 public partial class PersonViewModel : ViewModelBase
 {
-    private readonly IDatabaseService _databaseService;
-    private readonly INavigationService _navigationService;
+    private readonly IDatabaseService _database;
+    private readonly INavigationService _navigation;
+    private readonly IDialogService _dialog;
 
     [ObservableProperty]
     private int _id;
@@ -40,10 +41,11 @@ public partial class PersonViewModel : ViewModelBase
     {
     }
     
-    public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, List<PersonState> states, IDatabaseService databaseService, INavigationService navigationService)
+    public PersonViewModel(int id, string firstName, string lastName, GroupViewModel group, List<PersonState> states, IAppContext appContext)
     {
-        _databaseService = databaseService;
-        _navigationService  = navigationService;
+        _database = appContext.DatabaseService;
+        _navigation  = appContext.NavigationService;
+        _dialog = appContext.DialogService;
         Id = id;
         FirstName = firstName;
         LastName = lastName;
@@ -52,19 +54,30 @@ public partial class PersonViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Remove()
+    private async Task RemoveAsync()
     {
-        if (States.Contains(PersonState.Remove)) return;
-        _databaseService.DeletePersonWith(Id);
-        _navigationService.NavigateTo<GroupsViewModel>();
+        if (!States.Contains(PersonState.Remove)) return;
+
+        _dialog.Show<ConfirmationDialogViewModel>("Attendance", $"Are you sure you want to remove {FirstName} {LastName}?");
+        var result = await _dialog.CurrentDialogViewModel.Task;
+        if (!result) return;
+
+        _database.DeletePersonWith(Id);
+        _navigation.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
-    private void RemoveFromGroup()
+    private async Task RemoveFromGroupAsync()
     {
-        if (States.Contains(PersonState.RemovableFromGroup)) return;
+        if (!States.Contains(PersonState.RemovableFromGroup)) return;
 
-        _databaseService.DeletePersonFromGroup(Id, Group.Id);
+        _dialog.Show<ConfirmationDialogViewModel>("Attendance", $"Are you sure you want to remove {FirstName} {LastName}?");
+
+        var result = await _dialog.CurrentDialogViewModel.Task;
+
+        if (!result) return;
+
+        _database.DeletePersonFromGroup(Id, Group.Id);
         Group.Refresh();
     }
     
@@ -92,6 +105,6 @@ public partial class PersonViewModel : ViewModelBase
     [RelayCommand]
     private void Edit()
     {
-        _navigationService.NavigateTo<EditPersonViewModel, EditPersonParameters>(new() {Person = this});
+        _navigation.NavigateTo<EditPersonViewModel, EditPersonParameters>(new() {Person = this});
     }
 }

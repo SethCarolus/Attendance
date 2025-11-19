@@ -9,6 +9,9 @@ using Avalonia.Markup.Xaml;
 using Attendance.ViewModels;
 using Attendance.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Attendance.Factories.Contracts;
+using Attendance.Factories;
+using Attendance.ViewModels.Dialogs;
 
 namespace Attendance;
 
@@ -27,7 +30,20 @@ public partial class App : Application
         collection.AddSingleton<AttendanceContext>();
         collection.AddSingleton<INavigationService, NavigationService>();
         collection.AddTransient<IDatabaseService, DatabaseService>();
-        
+        collection.AddSingleton<IDialogService, DialogService>();
+        collection.AddTransient<IAppContext, AppContext>();
+
+        // Factories
+        collection.AddSingleton<IGroupViewModelFactory, GroupViewModelFactory>();
+        collection.AddSingleton<IPersonViewModelFactory, PersonViewModelFactory>();
+        collection.AddSingleton<ISessionViewModelFactory, SessionViewModelFactory>();
+
+
+        // Dialogs
+
+        collection.AddTransient<ConfirmationDialogViewModel>();
+
+
         // View Models
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<GroupsViewModel>();

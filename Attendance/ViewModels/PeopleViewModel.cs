@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Attendance.Enums;
+using Attendance.Factories.Contracts;
 using Attendance.Models;
 using Attendance.Services.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,6 +13,7 @@ public partial class PeopleViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly IDatabaseService _databaseService;
+    private readonly IPersonViewModelFactory _personViewModelFactory;
     
     [ObservableProperty]
     private ObservableCollection<PersonViewModel> _people;
@@ -22,10 +24,11 @@ public partial class PeopleViewModel : ViewModelBase
     [ObservableProperty]
     private string? _lastName;
 
-    public PeopleViewModel(INavigationService navigationService, IDatabaseService databaseService)
+    public PeopleViewModel(IAppContext appContext, IPersonViewModelFactory personViewModelFactory)
     {
-        _navigationService = navigationService;
-        _databaseService = databaseService;
+        _navigationService = appContext.NavigationService;
+        _databaseService = appContext.DatabaseService;
+        _personViewModelFactory = personViewModelFactory;
         Refresh();
     }
 
@@ -60,7 +63,7 @@ public partial class PeopleViewModel : ViewModelBase
         People = new();
         foreach (var person in _databaseService.GetPeople())
         {
-            People.Add(new(person.Id, person.FirstName, person.LastName, null, [PersonState.Remove, PersonState.Edit], _databaseService, _navigationService));
+            People.Add(_personViewModelFactory.Create(person, null, [PersonState.Remove, PersonState.Edit]));
         }       
     }
 }

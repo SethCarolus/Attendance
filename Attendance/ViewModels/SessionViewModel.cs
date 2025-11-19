@@ -1,18 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Attendance.Models;
 using Attendance.Services.Contracts;
+using Attendance.ViewModels.Dialogs;
 using Attendance.ViewModels.Parameters;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Attendance.ViewModels;
 
 public partial class SessionViewModel: ViewModelBase
 {    
-    private readonly INavigationService _navigationService;
-    private readonly IDatabaseService  _databaseService;
+    private readonly INavigationService _navigation;
+    private readonly IDatabaseService  _database;
+    private readonly IDialogService _dialog;
     
     [ObservableProperty]
     private int _id;
@@ -44,10 +47,11 @@ public partial class SessionViewModel: ViewModelBase
     }
 
     public SessionViewModel(int id, GroupViewModel group, DateOnly date, TimeOnly? start, TimeOnly? end, string? name,
-        string? description, INavigationService navigationService, IDatabaseService databaseService)
+        string? description, IAppContext appContext)
     {
-        _navigationService = navigationService;
-        _databaseService = databaseService;
+        _navigation = appContext.NavigationService;
+        _database = appContext.DatabaseService;
+        _dialog = appContext.DialogService;
         Id = id;
         Group = group;
         Date = date;
@@ -58,27 +62,32 @@ public partial class SessionViewModel: ViewModelBase
         Attendances = new();
         foreach (var p in Group.People)
         {
-            Attendances.Add(new(p, this, _databaseService.WasPresent(p.Id, Id), databaseService));
+            Attendances.Add(new(p, this, _database.WasPresent(p.Id, Id), appContext.DatabaseService)); // This passsing is bad!
         }
     }
 
     [RelayCommand]
     private void View()
     {
-        _navigationService.NavigateTo(this);
+        _navigation.NavigateTo(this);
     }
 
     [RelayCommand]
     private void Back()
     {
-        _navigationService.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = Group});
+        _navigation.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = Group});
     }
 
     [RelayCommand]
-    private void Remove()
+    private async Task RemoveAsync()
     {
-        _databaseService.DeleteSessionWith(Id);
-        _navigationService.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = Group});
+        var displayName = string.IsNullOrWhiteSpace(Name) ? "Session" : Name;
+        _dialog.Show<ConfirmationDialogViewModel>("Attendance", $"Are you sure you want to remove {displayName}?");
+        var result = await _dialog.CurrentDialogViewModel.Task;
+        if (!result) return;
+
+        _database.DeleteSessionWith(Id);
+        _navigation.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = Group});
     }
 
     [RelayCommand]

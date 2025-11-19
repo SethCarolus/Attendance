@@ -1,6 +1,10 @@
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Attendance.Factories;
+using Attendance.Factories.Contracts;
 using Attendance.Models;
 using Attendance.Services.Contracts;
+using Attendance.ViewModels.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 namespace Attendance.ViewModels;
@@ -9,7 +13,10 @@ public partial class GroupsViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly IDatabaseService _databaseService;
-    
+    private readonly IDialogService _dialogService;
+
+    private readonly IGroupViewModelFactory _groupViewModelFactory;
+
     [ObservableProperty]
     private ObservableCollection<GroupViewModel> _groups;
 
@@ -25,10 +32,12 @@ public partial class GroupsViewModel : ViewModelBase
     [ObservableProperty]
     private string? _lastName;
 
-    public GroupsViewModel(INavigationService navigationService, IDatabaseService databaseService)
+    public GroupsViewModel(INavigationService navigationService, IDatabaseService databaseService, IGroupViewModelFactory groupViewModelFactory, IDialogService dialogService)
     {
         _navigationService = navigationService;
         _databaseService = databaseService;
+        _groupViewModelFactory = groupViewModelFactory;
+        _dialogService = dialogService;
         LoadDataAsync();
     }
 
@@ -42,8 +51,7 @@ public partial class GroupsViewModel : ViewModelBase
         
         foreach (var group in _databaseService.GetGroups())
         {
-            var gvm = new GroupViewModel(group, _navigationService, _databaseService);
-            Groups.Add(gvm);
+            Groups.Add(_groupViewModelFactory.Create(group));
         }
         
     }
@@ -79,8 +87,8 @@ public partial class GroupsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ViewPeople()
+    private async Task ViewPeopleAsync()
     {
-        _navigationService.NavigateTo<PeopleViewModel>();
+       _navigationService.NavigateTo<PeopleViewModel>();
     }
 }

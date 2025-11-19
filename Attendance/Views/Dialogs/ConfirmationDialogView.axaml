@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dialogs="using:Attendance.ViewModels.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignWidth="400" 
+             d:DesignHeight="300"
+             x:Class="Attendance.Views.Dialogs.ConfirmationDialogView"
+             Padding="10"
+             Background="{StaticResource PrimaryBackground}">
+
+    <Design.DataContext>
+		<dialogs:ConfirmationDialogViewModel/>
+    </Design.DataContext>
+
+  <Border
+     Padding="10"
+     BorderBrush="Black"
+     BorderThickness="1"
+     CornerRadius="4">
+	    <Grid
+            RowDefinitions="2*, 4*, 3*">
+      <StackPanel>
+        <TextBlock
+            Text="{Binding Title}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+        <Rectangle Height="1" Fill="Gray" Margin="5,10"/>   
+      </StackPanel>
+
+      <Grid
+        Grid.Row="1"
+        RowDefinitions="8*, 2*">
+          <TextBlock
+            Text="{Binding Message}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            TextWrapping="Wrap"
+            />
+           <Rectangle Grid.Row="1" Height="1" Fill="Gray" Margin="5,10"/>   
+      </Grid>
+
+      <Grid
+        Grid.Row="2"
+        ColumnDefinitions="5*, 5*">
+
+        <Button
+            Classes="Default"
+            Grid.Column="0"
+            Content="{Binding ConfirmText}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Command="{Binding ConfirmCommand}"/>
+        <Button
+            Classes="Caution"
+            Grid.Column="1"
+            Content="{Binding CancelText}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Command="{Binding CancelCommand}"/>
+		  
+      </Grid>
+
+    </Grid>
+  </Border>
+</UserControl>

@@ -1,28 +1,31 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Attendance.Enums;
+using Attendance.Factories.Contracts;
 using Attendance.Models;
-using Attendance.Services;
 using Attendance.Services.Contracts;
+using Attendance.ViewModels.Dialogs;
 using Attendance.ViewModels.Parameters;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
 
 namespace Attendance.ViewModels;
 
 public partial class GroupViewModel : ViewModelBase
 {
-    private readonly INavigationService _navigationService;
-    private readonly IDatabaseService _databaseService;
+    private readonly INavigationService _navigation;
+    private readonly IDatabaseService _database;
+    private readonly IDialogService _dialog;
+
+    private readonly IPersonViewModelFactory _personViewModelFactory;
     
     [ObservableProperty]
     private int _id;
     
     [ObservableProperty]
-    private string _name;
+    private string? _name;
     
     [ObservableProperty]
     private string _description;
@@ -34,12 +37,14 @@ public partial class GroupViewModel : ViewModelBase
     private ObservableCollection<PersonViewModel> _allPeople;
     
     
-    public GroupViewModel(GroupModel group, INavigationService navigationService, IDatabaseService databaseService)
+    public GroupViewModel(GroupModel group, IAppContext appContext, IPersonViewModelFactory personViewModelFactory)
     {
         ArgumentNullException.ThrowIfNull(group);
-        
-        _navigationService = navigationService;
-        _databaseService = databaseService;
+
+        _navigation = appContext.NavigationService;
+        _database = appContext.DatabaseService;
+        _dialog = appContext.DialogService;
+        _personViewModelFactory = personViewModelFactory;
 
         Id = group.Id;
         Name = group.Name;
@@ -48,14 +53,14 @@ public partial class GroupViewModel : ViewModelBase
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName,  p.LastName, this, [PersonState.RemovableFromGroup], databaseService, _navigationService));
+            People.Add(_personViewModelFactory.Create(p, this, [PersonState.RemovableFromGroup]));
         }
         
         var context =  new AttendanceContext();
         AllPeople = new();
         foreach (var p in context.People.Where(p => !group.People.Contains(p)))
         {
-            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, [PersonState.Add], databaseService, navigationService));       
+            AllPeople.Add(personViewModelFactory.Create(p, this,[PersonState.Add]));       
         }
     }
 
@@ -66,42 +71,49 @@ public partial class GroupViewModel : ViewModelBase
     [RelayCommand]
     private void View()
     {
-        _navigationService.NavigateTo(this);
+        _navigation.NavigateTo(this);
     }
 
     [RelayCommand]
     private void Sessions()
     {
-        _navigationService.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = this});
+        _navigation.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = this});
     }
 
     [RelayCommand]
-    private void Remove()
+    private async Task RemoveAsync()
     {
-        _databaseService.DeleteGroupWith(Id);
-        _navigationService.NavigateTo<GroupsViewModel>();
+        var displayName = string.IsNullOrWhiteSpace(Name) ? "Group" : Name;
+        _dialog.Show<ConfirmationDialogViewModel>("Attendance",$"Are you sure you want to remove {Name}?");
+
+        var result = await _dialog.CurrentDialogViewModel.Task;
+        
+        if (!result) return;
+        
+        _database.DeleteGroupWith(Id);
+        _navigation.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
     private void Back()
     {
-        _navigationService.NavigateTo<GroupsViewModel>();
+        _navigation.NavigateTo<GroupsViewModel>();
     }
     
     public void Refresh()
     {
-        var group = _databaseService.GetGroupWith(Id);
+        var group = _database.GetGroupWith(Id);
 
         People = new();
         foreach (var p in group.People)
         {
-            People.Add(new(p.Id, p.FirstName, p.LastName, this, [PersonState.RemovableFromGroup], _databaseService, _navigationService));
+            People.Add(_personViewModelFactory.Create(p, this, [PersonState.RemovableFromGroup]));
         }  
         
         AllPeople = new();
-        foreach (var p in _databaseService.GetPeople().Where(p => !group.People.Contains(p)))
+        foreach (var p in _database.GetPeople().Where(p => !group.People.Contains(p)))
         {
-            AllPeople.Add(new(p.Id, p.FirstName,  p.LastName, this, [PersonState.Add], _databaseService, _navigationService));       
+            AllPeople.Add(_personViewModelFactory.Create(p, this, [PersonState.Add]));       
         }
     }
 }
