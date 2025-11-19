@@ -147,4 +147,15 @@ public class DatabaseService : IDatabaseService
                 .Include(a => a.Session)
                 .SingleOrDefault(a => a.Person.Id == personId && a.Session.Id == sessionId) != null;
     }
+
+    public void EditSession(SessionModel session)
+    {
+        var s = _context.Sessions.FirstOrDefault(_s => _s.Id == session.Id);
+        s.Name = session.Name;
+        s.Description = session.Description;
+        s.Start = session.Start;
+        s.End = session.End;
+        s.Date = session.Date;
+        _context.SaveChanges();
+    }
 }

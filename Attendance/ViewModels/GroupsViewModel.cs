@@ -7,13 +7,14 @@ using Attendance.Services.Contracts;
 using Attendance.ViewModels.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 namespace Attendance.ViewModels;
 
 public partial class GroupsViewModel : ViewModelBase
 {
-    private readonly INavigationService _navigationService;
-    private readonly IDatabaseService _databaseService;
-    private readonly IDialogService _dialogService;
+    private readonly INavigationService _navigation;
+    private readonly IDatabaseService _database;
+    private readonly IDialogService _dialog;
 
     private readonly IGroupViewModelFactory _groupViewModelFactory;
 
@@ -32,12 +33,12 @@ public partial class GroupsViewModel : ViewModelBase
     [ObservableProperty]
     private string? _lastName;
 
-    public GroupsViewModel(INavigationService navigationService, IDatabaseService databaseService, IGroupViewModelFactory groupViewModelFactory, IDialogService dialogService)
+    public GroupsViewModel(INavigationService navigation, IDatabaseService database, IGroupViewModelFactory groupViewModelFactory, IDialogService dialog)
     {
-        _navigationService = navigationService;
-        _databaseService = databaseService;
+        _navigation = navigation;
+        _database = database;
         _groupViewModelFactory = groupViewModelFactory;
-        _dialogService = dialogService;
+        _dialog = dialog;
         LoadDataAsync();
     }
 
@@ -49,7 +50,7 @@ public partial class GroupsViewModel : ViewModelBase
     {
         Groups = new();
         
-        foreach (var group in _databaseService.GetGroups())
+        foreach (var group in _database.GetGroups())
         {
             Groups.Add(_groupViewModelFactory.Create(group));
         }
@@ -64,7 +65,7 @@ public partial class GroupsViewModel : ViewModelBase
             return;
         }
         
-        _databaseService.AddGroup(new GroupModel(Name, Description));
+        _database.AddGroup(new GroupModel(Name, Description));
 
         LoadDataAsync();
         Name = "";
@@ -80,7 +81,7 @@ public partial class GroupsViewModel : ViewModelBase
         }
         
         var person = new PersonModel(FirstName.Trim(), LastName.Trim());
-        _databaseService.AddPerson(person);
+        _database.AddPerson(person);
 
         FirstName = "";
         LastName = "";
@@ -89,6 +90,6 @@ public partial class GroupsViewModel : ViewModelBase
     [RelayCommand]
     private async Task ViewPeopleAsync()
     {
-       _navigationService.NavigateTo<PeopleViewModel>();
+       _navigation.NavigateTo<PeopleViewModel>();
     }
 }

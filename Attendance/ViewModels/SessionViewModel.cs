@@ -75,7 +75,7 @@ public partial class SessionViewModel: ViewModelBase
     [RelayCommand]
     private void Back()
     {
-        _navigation.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = Group});
+        _navigation.NavigateTo<SessionsViewModel, SessionsParameters>(new() {Group = Group});
     }
 
     [RelayCommand]
@@ -87,13 +87,16 @@ public partial class SessionViewModel: ViewModelBase
         if (!result) return;
 
         _database.DeleteSessionWith(Id);
-        _navigation.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = Group});
+        _navigation.NavigateTo<SessionsViewModel, SessionsParameters>(new() {Group = Group});
     }
 
     [RelayCommand]
     private void Edit()
     {
-        
+        _navigation.NavigateTo<EditSessionViewModel, EditSessionParameters>(new()
+        {
+            Session = this
+        });
     }
 
     

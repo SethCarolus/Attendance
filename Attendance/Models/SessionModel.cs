@@ -29,4 +29,13 @@ public class SessionModel
         Start = start;
         End = end;
     }
+
+    public SessionModel(string? name, string? description, DateOnly date, TimeOnly? start, TimeOnly? end)
+    {
+        Name = name;
+        Description = description;
+        Date = date;
+        Start = start;
+        End = end;
+    }
 }

@@ -50,6 +50,7 @@ public partial class App : Application
         collection.AddTransient<PeopleViewModel>();
         collection.AddTransient<SessionsViewModel>();
         collection.AddTransient<EditPersonViewModel>();
+        collection.AddTransient<EditSessionViewModel>();
         
         var services = collection.BuildServiceProvider();
         

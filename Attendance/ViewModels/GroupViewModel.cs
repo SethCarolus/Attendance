@@ -77,7 +77,7 @@ public partial class GroupViewModel : ViewModelBase
     [RelayCommand]
     private void Sessions()
     {
-        _navigation.NavigateTo<SessionsViewModel, SessionParameters>(new() {Group = this});
+        _navigation.NavigateTo<SessionsViewModel, SessionsParameters>(new() {Group = this});
     }
 
     [RelayCommand]

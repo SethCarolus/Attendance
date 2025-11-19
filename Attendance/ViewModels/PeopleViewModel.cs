@@ -11,8 +11,8 @@ namespace Attendance.ViewModels;
 
 public partial class PeopleViewModel : ViewModelBase
 {
-    private readonly INavigationService _navigationService;
-    private readonly IDatabaseService _databaseService;
+    private readonly INavigationService _navigation;
+    private readonly IDatabaseService _database;
     private readonly IPersonViewModelFactory _personViewModelFactory;
     
     [ObservableProperty]
@@ -26,8 +26,8 @@ public partial class PeopleViewModel : ViewModelBase
 
     public PeopleViewModel(IAppContext appContext, IPersonViewModelFactory personViewModelFactory)
     {
-        _navigationService = appContext.NavigationService;
-        _databaseService = appContext.DatabaseService;
+        _navigation = appContext.NavigationService;
+        _database = appContext.DatabaseService;
         _personViewModelFactory = personViewModelFactory;
         Refresh();
     }
@@ -39,7 +39,7 @@ public partial class PeopleViewModel : ViewModelBase
     [RelayCommand]
     private void Back()
     {
-        _navigationService.NavigateTo<GroupsViewModel>();
+        _navigation.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
@@ -51,7 +51,7 @@ public partial class PeopleViewModel : ViewModelBase
         }
         
         var person = new PersonModel(FirstName, LastName);
-        _databaseService.AddPerson(person);
+        _database.AddPerson(person);
 
         FirstName = "";
         LastName = "";
@@ -61,7 +61,7 @@ public partial class PeopleViewModel : ViewModelBase
     private void Refresh()
     {
         People = new();
-        foreach (var person in _databaseService.GetPeople())
+        foreach (var person in _database.GetPeople())
         {
             People.Add(_personViewModelFactory.Create(person, null, [PersonState.Remove, PersonState.Edit]));
         }       

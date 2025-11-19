@@ -11,11 +11,11 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Attendance.ViewModels;
 
-public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<SessionParameters>
+public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<SessionsParameters>
 {
 
-    private readonly INavigationService _navigationService;
-    private readonly IDatabaseService _databaseService;
+    private readonly INavigationService _navigation;
+    private readonly IDatabaseService _database;
     private readonly ISessionViewModelFactory _sessionViewModelFactory;
     private GroupViewModel _groupViewModel;
     
@@ -40,8 +40,8 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
     
     public SessionsViewModel(IAppContext appContext, ISessionViewModelFactory sessionViewModelFactory)
     {
-        _navigationService  =  appContext.NavigationService;
-        _databaseService = appContext.DatabaseService;
+        _navigation  =  appContext.NavigationService;
+        _database = appContext.DatabaseService;
         _sessionViewModelFactory = sessionViewModelFactory;
     }
 
@@ -52,7 +52,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
     [RelayCommand]
     private void Back()
     {
-        _navigationService.NavigateTo<GroupsViewModel>();
+        _navigation.NavigateTo<GroupsViewModel>();
     }
 
     [RelayCommand]
@@ -66,7 +66,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
             session.Start = TimeOnly.FromTimeSpan(Start.Value);
             session.End = TimeOnly.FromTimeSpan(End.Value);
         }
-        _databaseService.AddSession(session);
+        _database.AddSession(session);
         Refresh();
     }
 
@@ -75,7 +75,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
     {
         Sessions = new();
         foreach (var s in 
-                 _databaseService.GetSessionsForGroupWith(_groupViewModel.Id)
+                 _database.GetSessionsForGroupWith(_groupViewModel.Id)
                      .Where( s => s.Date == DateOnly.FromDateTime(SelectedDate)))
         {
             Sessions.Add(
@@ -95,7 +95,7 @@ public partial class SessionsViewModel: ViewModelBase, IParameterReceiver<Sessio
         Refresh();
     }
 
-    public void ReceiveParameter(SessionParameters parameters)
+    public void ReceiveParameter(SessionsParameters parameters)
     {
         _groupViewModel = parameters.Group;
         Refresh();

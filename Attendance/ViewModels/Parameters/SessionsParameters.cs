@@ -1,6 +1,6 @@
 namespace Attendance.ViewModels.Parameters;
 
-public class SessionParameters
+public class SessionsParameters
 {
     public GroupViewModel Group { get; set; }
 }

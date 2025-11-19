@@ -26,4 +26,5 @@ public interface IDatabaseService
     public void DeleteAttendance(int personId, int sessionId);
     public void AddAttendance(int  personId, int sessionId);
     public bool WasPresent(int personId, int sessionId);
+    public void EditSession(SessionModel ssession);
 }

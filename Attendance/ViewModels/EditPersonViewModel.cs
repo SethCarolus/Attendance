@@ -9,16 +9,16 @@ namespace Attendance.ViewModels;
 
 public partial class EditPersonViewModel: ViewModelBase, IParameterReceiver<EditPersonParameters>
 {
-    private readonly INavigationService _navigationService;
-    private readonly IDatabaseService _databaseService;
+    private readonly INavigationService _navigation;
+    private readonly IDatabaseService _database;
     
     [ObservableProperty]
     private PersonViewModel _person;
 
     public EditPersonViewModel(INavigationService navigationService, IDatabaseService databaseService)
     {
-        _navigationService = navigationService;
-        _databaseService =  databaseService;
+        _navigation = navigationService;
+        _database =  databaseService;
     }
 
     public EditPersonViewModel()
@@ -33,7 +33,7 @@ public partial class EditPersonViewModel: ViewModelBase, IParameterReceiver<Edit
     [RelayCommand]
     private void Back()
     {
-        _navigationService.NavigateTo<PeopleViewModel>();
+        _navigation.NavigateTo<PeopleViewModel>();
     }
 
     [RelayCommand]
@@ -43,7 +43,7 @@ public partial class EditPersonViewModel: ViewModelBase, IParameterReceiver<Edit
             return;
 
         var person = new PersonModel(Person.Id, Person.FirstName, Person.LastName);
-        _databaseService.EditPerson(person);
+        _database.EditPerson(person);
         Back();
     }
 

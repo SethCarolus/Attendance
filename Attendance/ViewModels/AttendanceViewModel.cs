@@ -9,7 +9,7 @@ namespace Attendance.ViewModels;
 public partial class AttendanceViewModel: ViewModelBase
  {
      private readonly SessionViewModel _session;
-     private readonly IDatabaseService _databaseService;
+     private readonly IDatabaseService _database;
      
      [ObservableProperty]
      private PersonViewModel _person;
@@ -25,7 +25,7 @@ public partial class AttendanceViewModel: ViewModelBase
          Person = person;
          _session = session;
          _present = present;
-         _databaseService = databaseService;
+         _database = databaseService;
      }
 
      [RelayCommand]
@@ -33,11 +33,11 @@ public partial class AttendanceViewModel: ViewModelBase
      {
         if (!Present)
         {
-            _databaseService.DeleteAttendance(Person.Id, _session.Id);
+            _database.DeleteAttendance(Person.Id, _session.Id);
         }
         else
         {
-            _databaseService.AddAttendance(Person.Id,  _session.Id);
+            _database.AddAttendance(Person.Id,  _session.Id);
         }
      }
  }
